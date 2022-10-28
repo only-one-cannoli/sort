@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-big-o = "*"
 
 [dev-packages]
 black = "*"
@@ -12,6 +11,7 @@ isort = "*"
 mypy = "*"
 pylint = "*"
 pytest = "*"
+big-o = "*"
 
 [requires]
 python_version = "3.9"
