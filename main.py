@@ -38,14 +38,21 @@ def insertion_sort(target: List[float]) -> List[float]:
 
 def _sorted_extend(list1: List[float], list2: List[float]) -> List[float]:
     """
-    Extends list1 with the contents of list2.  Assumes that at least list1 is
+    Extends list1 with the contents of list2.  Assumes that both lists are
     already sorted!
     """
-    for element in list2:
-        list1 = _sorted_append(list1, element)
-    list2 = []
+    ordered = []
+    while len(list1) > 0 and len(list2) > 0:
+        if list1[0] <= list2[0]:
+            ordered.append(list1.pop(0))
+        else:
+            ordered.append(list2.pop(0))
+    if len(list1) > 0:
+        ordered.extend(list1)
+    elif len(list2) > 0:
+        ordered.extend(list2)
 
-    return list1
+    return ordered
 
 
 def merge_sort(target: List[float]) -> List[float]:
