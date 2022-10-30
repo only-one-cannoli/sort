@@ -1,4 +1,12 @@
-from copy import deepcopy
+"""
+main.py
+Patrick Applegate
+29 Oct 2022
+
+Provides literal, simple implementations of insertion sort, merge sort, and
+quicksort.
+"""
+
 from typing import List
 
 
@@ -12,28 +20,12 @@ def _sorted_append(target: List[float], to_insert: float) -> List[float]:
         for element in target:
             if to_insert < element:
                 break
-            else:
-                where += 1
+            where += 1
     except IndexError:
         where = len(target)
     target.insert(where, to_insert)
 
     return target
-
-
-def insertion_sort(target: List[float]) -> List[float]:
-    """
-    Insertion sort.
-    """
-    try:
-        ordered = [target[0]]
-    except IndexError:
-        return target
-
-    for element in target[1:]:
-        _sorted_append(ordered, element)
-
-    return ordered
 
 
 def _sorted_extend(list1: List[float], list2: List[float]) -> List[float]:
@@ -51,6 +43,21 @@ def _sorted_extend(list1: List[float], list2: List[float]) -> List[float]:
         ordered.extend(list1)
     elif len(list2) > 0:
         ordered.extend(list2)
+
+    return ordered
+
+
+def insertion_sort(target: List[float]) -> List[float]:
+    """
+    Insertion sort.
+    """
+    try:
+        ordered = [target[0]]
+    except IndexError:
+        return target
+
+    for element in target[1:]:
+        _sorted_append(ordered, element)
 
     return ordered
 

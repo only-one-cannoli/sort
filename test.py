@@ -1,4 +1,13 @@
-import big_o
+"""
+test.py
+Patrick Applegate
+29 October 2022
+
+Tests the implementations of simple sorting algorithms given in main.py,
+including checking their time complexity.
+"""
+
+import big_o  # type: ignore
 import pytest
 
 from main import (
@@ -10,8 +19,11 @@ from main import (
 )
 
 
-@pytest.fixture
-def test_cases():
+@pytest.fixture(name="cases")
+def fixture_cases():
+    """
+    Sets up test cases for the sorting algorithms.
+    """
     return {
         "even_length": {
             "pre": [7, 12, 10, 7, 1, 6, 16, 18, 3, 5],
@@ -30,50 +42,123 @@ def test_cases():
     }
 
 
+@pytest.fixture(name="big_o_settings")
+def fixture_big_o_settings():
+    """
+    Defines consistent settings for the big_o package.
+    """
+    return {
+        "n_repeats": 30,
+        "min_n": 1,
+        "max_n": 10**3,
+    }
+
+
+# pylint: disable-next=invalid-name
+def positive_integers(n):
+    """
+    Just a wrapper function, really.
+    """
+    return big_o.datagen.integers(n, 0, 10**4)
+
+
 class TestInternalMethods:
+    """
+    Tests methods that shouldn't be used outside of the sorting algorithms.
+    """
     def test_sorted_append(self):
+        """
+        Make sure we can append a single element.
+        """
         assert _sorted_append([1, 3], 2) == [1, 2, 3]
 
     def test_sorted_extend(self):
+        """
+        Make sure that extending works.
+        """
         assert _sorted_extend([1, 3], [2, 4]) == [1, 2, 3, 4]
 
 
 class TestSortingAlgorithms:
-    def test_insertion_sort(self, test_cases):
-        assert insertion_sort(test_cases["even_length"]["pre"]) == test_cases["even_length"]["post"]
-        assert insertion_sort(test_cases["odd_length"]["pre"]) == test_cases["odd_length"]["post"]
-        assert insertion_sort(test_cases["already_sorted"]["pre"]) == test_cases["already_sorted"]["post"]
-        assert insertion_sort(test_cases["one_element"]["pre"]) == test_cases["one_element"]["post"]
-        assert insertion_sort(test_cases["empty"]["pre"]) == test_cases["empty"]["post"]
+    """
+    Checks the sorting algorithms themselves.
+    """
+    def test_insertion_sort(self, cases):
+        """
+        Applies insertion sort to the different cases.
+        """
+        assert (
+            insertion_sort(cases["even_length"]["pre"])
+            == cases["even_length"]["post"]
+        )
+        assert (
+            insertion_sort(cases["odd_length"]["pre"])
+            == cases["odd_length"]["post"]
+        )
+        assert (
+            insertion_sort(cases["already_sorted"]["pre"])
+            == cases["already_sorted"]["post"]
+        )
+        assert (
+            insertion_sort(cases["one_element"]["pre"])
+            == cases["one_element"]["post"]
+        )
+        assert insertion_sort(cases["empty"]["pre"]) == cases["empty"]["post"]
 
-    def test_merge_sort(self, test_cases):
-        assert merge_sort(test_cases["even_length"]["pre"]) == test_cases["even_length"]["post"]
-        assert merge_sort(test_cases["odd_length"]["pre"]) == test_cases["odd_length"]["post"]
-        assert merge_sort(test_cases["already_sorted"]["pre"]) == test_cases["already_sorted"]["post"]
-        assert merge_sort(test_cases["one_element"]["pre"]) == test_cases["one_element"]["post"]
-        assert merge_sort(test_cases["empty"]["pre"]) == test_cases["empty"]["post"]
+    def test_merge_sort(self, cases):
+        """
+        Applies merge sort to the different cases.
+        """
+        assert (
+            merge_sort(cases["even_length"]["pre"])
+            == cases["even_length"]["post"]
+        )
+        assert (
+            merge_sort(cases["odd_length"]["pre"])
+            == cases["odd_length"]["post"]
+        )
+        assert (
+            merge_sort(cases["already_sorted"]["pre"])
+            == cases["already_sorted"]["post"]
+        )
+        assert (
+            merge_sort(cases["one_element"]["pre"])
+            == cases["one_element"]["post"]
+        )
+        assert merge_sort(cases["empty"]["pre"]) == cases["empty"]["post"]
 
-    def test_quicksort(self, test_cases):
-        assert quicksort(test_cases["even_length"]["pre"]) == test_cases["even_length"]["post"]
-        assert quicksort(test_cases["odd_length"]["pre"]) == test_cases["odd_length"]["post"]
-        assert quicksort(test_cases["already_sorted"]["pre"]) == test_cases["already_sorted"]["post"]
-        assert quicksort(test_cases["one_element"]["pre"]) == test_cases["one_element"]["post"]
-        assert quicksort(test_cases["empty"]["pre"]) == test_cases["empty"]["post"]
+    def test_quicksort(self, cases):
+        """
+        Applies quicksort to the different cases.
+        """
+        assert (
+            quicksort(cases["even_length"]["pre"])
+            == cases["even_length"]["post"]
+        )
+        assert (
+            quicksort(cases["odd_length"]["pre"])
+            == cases["odd_length"]["post"]
+        )
+        assert (
+            quicksort(cases["already_sorted"]["pre"])
+            == cases["already_sorted"]["post"]
+        )
+        assert (
+            quicksort(cases["one_element"]["pre"])
+            == cases["one_element"]["post"]
+        )
+        assert quicksort(cases["empty"]["pre"]) == cases["empty"]["post"]
 
-
-def positive_integers(n):
-    return big_o.datagen.integers(n, 0, 10 ** 4)
-
-@pytest.fixture
-def big_o_settings():
-    return {
-        "n_repeats": 30,
-        "min_n": 1,
-        "max_n": 10 ** 3,
-    }
 
 class TestComplexity:
+    """
+    Ensures that the time complexity of the individual sorting algorithms
+    matches our expectations.
+    """
     def test_insertion_sort_quadratic(self, big_o_settings):
+        """
+        Insertion sort should be quadratic.
+        """
         best, _ = big_o.big_o(
             insertion_sort,
             positive_integers,
@@ -82,6 +167,9 @@ class TestComplexity:
         assert "Quadratic" in str(best)
 
     def test_merge_sort_nlogn(self, big_o_settings):
+        """
+        Merge sort should be n log n.
+        """
         best, _ = big_o.big_o(
             merge_sort,
             positive_integers,
@@ -90,6 +178,9 @@ class TestComplexity:
         assert "Linearithmic" in str(best)
 
     def test_quicksort_nlogn(self, big_o_settings):
+        """
+        Quicksort should also be n log n.
+        """
         best, _ = big_o.big_o(
             quicksort,
             positive_integers,
