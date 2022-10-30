@@ -74,4 +74,18 @@ def quicksort(target: List[float]) -> List[float]:
     """
     Quicksort.
     """
+    if len(target) < 2:
+        return target
 
+    pivot = target[-1]
+    target = target[:-1]
+
+    less = []
+    greater_or_equal = []
+    for element in target:
+        if element < pivot:
+            less.append(element)
+        else:
+            greater_or_equal.append(element)
+
+    return quicksort(less) + [pivot] + quicksort(greater_or_equal)
